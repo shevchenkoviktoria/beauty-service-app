@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "cra-template-typescript": "1.2.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +38,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "A platform for booking beauty services.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shevchenkoviktoria/beauty-service-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shevchenkoviktoria/beauty-service-app/issues"
+  },
+  "homepage": "https://github.com/shevchenkoviktoria/beauty-service-app#readme"
 }
