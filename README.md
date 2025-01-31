@@ -176,3 +176,8 @@ This table stores **posts made by users (beauty masters, customers, or admins)**
 5. **Customers leave reviews** after completed appointments.
 6. **Users can follow beauty masters** to see their updates/posts.
 7. **Beauty masters & customers can post** updates about services.
+
+Roles: 
+customer → Can book appointments, leave reviews, make payments.
+beauty_master → Can list services, manage appointments, view reviews.
+admin → Can manage users, delete beauty masters, approve/reject accounts.
