@@ -2,6 +2,7 @@ import bodyParser = require("body-parser");
 import authRoutes from "./routes/authRoutes";
 import { Sequelize } from "sequelize";
 const dotenv = require("dotenv");
+import express from "express";
 
 
 
@@ -33,3 +34,4 @@ sequelize
     app.listen(5000, () => console.log("Server running on port 5000"));
   })
   .catch((err) => console.log(err));
+
