@@ -21,7 +21,7 @@ interface AuthenticatedRequest extends Request {
     };
 }
 
-interface AuthenticatedResponse extends Response {}
+interface AuthenticatedResponse extends Response { }
 
 router.get("/beauty_master", authenticateUser, authorizeRoles("beauty_master"), (req: AuthenticatedRequest, res: AuthenticatedResponse) => {
     res.json({ message: "Welcome, Beauty Master!" });
@@ -34,7 +34,7 @@ interface AuthenticatedRequest extends Request {
     };
 }
 
-interface AuthenticatedResponse extends Response {}
+interface AuthenticatedResponse extends Response { }
 
 router.get("/customer", authenticateUser, authorizeRoles("customer"), (req: AuthenticatedRequest, res: AuthenticatedResponse) => {
     res.json({ message: "Welcome, Customer!" });
