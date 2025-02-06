@@ -1,24 +1,57 @@
-const jwt = require("jsonwebtoken");
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-exports.authenticateUser = (req, res, next) => {
-    const token = req.header("Authorization");
-    if (!token) return res.status(401).json({ message: "Access Denied: No Token Provided" });
+interface AuthenticatedRequest extends Request {
+  user?: {
+    role: string;
+    id: string; // Assuming the token contains user ID
+  };
+}
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Attach user data to request
-        next();
-    } catch (error) {
-        res.status(400).json({ message: "Invalid Token" });
-    }
+export const authenticateUser = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.header("Authorization");
+
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ message: "Access Denied: No Token Provided" });
+  }
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as AuthenticatedRequest["user"];
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid Token" });
+  }
 };
 
 // Role-based authorization
-exports.authorizeRoles = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ message: "Access Denied: Insufficient Permissions" });
-        }
-        next();
-    };
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !req.user.role) {
+      return res
+        .status(403)
+        .json({ message: "Access Denied: User Role Not Found" });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ message: "Access Denied: Insufficient Permissions" });
+    }
+
+    next();
+  };
 };

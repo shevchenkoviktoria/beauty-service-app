@@ -1,43 +1,60 @@
-const express = require("express");
-const { authenticateUser, authorizeRoles } = require("../middlewares/authMiddleware");
-import { Request, Response } from "express";
-const router = express.Router();
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-// Admin-only route
 interface AuthenticatedRequest extends Request {
-    user?: {
-        role: string;
-    };
+  user?: {
+    role: string;
+    id: string;
+  };
 }
 
-router.get("/admin", authenticateUser, authorizeRoles("admin"), (req: AuthenticatedRequest, res: Response) => {
-    res.json({ message: "Welcome, Admin!" });
-});
+export const authenticateUser = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.header("Authorization");
 
-// Beauty master-only route
-interface AuthenticatedRequest extends Request {
-    user?: {
-        role: string;
-    };
-}
+  if (!authHeader) {
+    res.status(401).json({ message: "Access Denied: No Token Provided" });
+    return;
+  }
 
-interface AuthenticatedResponse extends Response { }
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
 
-router.get("/beauty_master", authenticateUser, authorizeRoles("beauty_master"), (req: AuthenticatedRequest, res: AuthenticatedResponse) => {
-    res.json({ message: "Welcome, Beauty Master!" });
-});
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as AuthenticatedRequest["user"];
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid Token" });
+    return;
+  }
+};
 
-// Customer-only route
-interface AuthenticatedRequest extends Request {
-    user?: {
-        role: string;
-    };
-}
+export const authorizeRoles = (...roles: string[]) => {
+  return (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): void => {
+    if (!req.user || !req.user.role) {
+      res.status(403).json({ message: "Access Denied: User Role Not Found" });
+      return;
+    }
 
-interface AuthenticatedResponse extends Response { }
+    if (!roles.includes(req.user.role)) {
+      res
+        .status(403)
+        .json({ message: "Access Denied: Insufficient Permissions" });
+      return;
+    }
 
-router.get("/customer", authenticateUser, authorizeRoles("customer"), (req: AuthenticatedRequest, res: AuthenticatedResponse) => {
-    res.json({ message: "Welcome, Customer!" });
-});
-
-module.exports = router;
+    next();
+  };
+};

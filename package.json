@@ -51,5 +51,8 @@
   "bugs": {
     "url": "https://github.com/shevchenkoviktoria/beauty-service-app/issues"
   },
-  "homepage": "https://github.com/shevchenkoviktoria/beauty-service-app#readme"
+  "homepage": "https://github.com/shevchenkoviktoria/beauty-service-app#readme",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.8"
+  }
 }
