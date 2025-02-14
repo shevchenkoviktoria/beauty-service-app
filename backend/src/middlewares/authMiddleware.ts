@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 interface AuthenticatedRequest extends Request {
   user?: {
     role: string;
-    id: string; // Assuming the token contains user ID
+    id: string;
   };
 }
 
