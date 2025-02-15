@@ -37,7 +37,6 @@ export const authenticateUser = (
   }
 };
 
-// Role-based authorization
 export const authorizeRoles = (...roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user || !req.user.role) {
